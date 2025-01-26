@@ -4,53 +4,142 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flappy Bird Clone</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
     body {
       margin: 0;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: #70c5ce;
-      font-family: Arial, sans-serif;
+      background: seashell;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
     }
     canvas {
       display: block;
-      background: #70c5ce;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-      width: 100%;
+      background: seashell;
       max-width: 800px;
+      width: 100%;
       height: auto;
+      font-weight: 200;
+      border: 5px solid black; /* Adds a solid black border */
+      border-radius: 15px; /* Rounds the corners */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Optional shadow for better appearance */
     }
+
     #titleScreen, #gameOverScreen {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(255, 255, 255, 0.8);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      color: white;
-      font-size: 24px;
+      color: black;
+      font-size: 32px;
       z-index: 10;
+      pointer-events: none;
     }
     #titleScreen button, #gameOverScreen button {
       margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 18px;
+      padding: 15px 30px;
+      font-size: 20px;
+      font-weight: bold;
       cursor: pointer;
+      pointer-events: all;
+      background-color: white;
+      border: 2px solid black;
+      border-radius: 15px;
+    }
+    #titleScreen button:hover, #gameOverScreen button:hover {
+      background-color: #e0e0e0;
     }
     #gameOverScreen {
       display: none;
     }
+    .title-image {
+      max-width: 50%; /* Reduced from 80% to 50% */
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+
+    .footer {
+      width: 100%;
+      padding: 20px;
+      color: black;
+      position: fixed;
+      bottom: 0;
+      font-size: 20px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      z-index: 20;
+    }
+    .footer button {
+      padding: 15px 20px;
+      font-size: 18px;
+      background-color: white;
+      color: black;
+      border: 2px solid black;
+      cursor: pointer;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+    }
+    .footer button:hover {
+      background-color: #e0e0e0;
+    }
+    .footer img {
+      width: 30px;
+      height: 30px;
+    }
+    .logo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 100px; /* Adjust based on your logo size */
+      height: auto;
+      z-index: 100;
+    }
+
+    .logo img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      transition: transform 0.6s ease-in-out;
+      cursor: pointer;
+    }
+
+    .logo img:hover {
+      transform: rotate(360deg);
+    }
+    @media (max-width: 600px) {
+      .footer {
+        font-size: 16px;
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="logo">
+    <img src="fric2.png" alt="Logo">
+  </div>
   <div id="titleScreen">
-    <h1>FLAPPY FRIC</h1>
+    <img src="fav.jpg" alt="Evolution Stages" class="title-image">
     <button id="startButton">Start Game</button>
   </div>
   <div id="gameOverScreen">
@@ -60,148 +149,27 @@
   </div>
   <canvas id="gameCanvas" width="800" height="600"></canvas>
 
+  <div class="footer">
+    <button onclick="window.open('https://twitter.com/fricthefrog', '_blank')">
+      <img src="fric1.png" alt="Twitter">Follow us on X
+    </button>
+    <button onclick="window.open('https://twitter.com/dricstudio', '_blank')">
+      <img src="fric2.png" alt="Twitter">Follow the artist!
+    </button>
+    <button class="copy-btn" onclick="copyCA()">Copy CA</button>
+  </div>
+
+  <script src="script.js"></script>
+
   <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const titleScreen = document.getElementById('titleScreen');
-    const gameOverScreen = document.getElementById('gameOverScreen');
-    const startButton = document.getElementById('startButton');
-    const restartButton = document.getElementById('restartButton');
-    const finalScore = document.getElementById('finalScore');
-
-    const fric1 = new Image();
-    fric1.src = 'fric1.png';
-    const fric2 = new Image();
-    fric2.src = 'fric2.png';
-
-    const bird = {
-      x: 50,
-      y: canvas.height / 2,
-      radius: 25, // Increased size for the bird
-      gravity: 0.13, // Made gravity floatier
-      lift: -5,
-      velocity: 0,
-      image: fric2
-    };
-
-    const pipes = [];
-    const pipeWidth = 60;
-    let pipeGap = 180;
-    const pipeFrequency = 120;
-    const minPipeGap = 100; // Minimum pipe gap
-    const gapReductionRate = 1; // Gap reduction per new pipe
-
-    let frame = 0;
-    let score = 0;
-    let gameOver = false;
-    let gameStarted = false;
-
-    function resetGame() {
-      bird.y = canvas.height / 2;
-      bird.velocity = 0;
-      pipes.length = 0;
-      pipeGap = 180; // Reset the gap size on restart
-      frame = 0;
-      score = 0;
-      gameOver = false;
-      gameOverScreen.style.display = 'none';
-      gameStarted = true;
-      gameLoop();
-    }
-
-    function drawBird() {
-      ctx.drawImage(bird.image, bird.x - bird.radius, bird.y - bird.radius, bird.radius * 2, bird.radius * 2);
-    }
-
-    function drawPipes() {
-      ctx.fillStyle = "green";
-      pipes.forEach(pipe => {
-        ctx.fillRect(pipe.x, 0, pipeWidth, pipe.top);
-        ctx.fillRect(pipe.x, canvas.height - pipe.bottom, pipeWidth, pipe.bottom);
+    function copyCA() {
+      const caText = 'EsP4kJfKUDLfX274WoBSiiEy74Sh4tZKUCDjfULHpump';
+      navigator.clipboard.writeText(caText).then(() => {
+        alert('CA copied to clipboard!');
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
       });
     }
-
-    function updatePipes() {
-      if (frame % pipeFrequency === 0) {
-        const top = Math.random() * (canvas.height - pipeGap - 100) + 50;
-        const bottom = canvas.height - top - pipeGap;
-        pipes.push({ x: canvas.width, top, bottom });
-
-        // Decrease the pipe gap dynamically, but ensure it doesn't go below the minimum
-        if (pipeGap > minPipeGap) {
-          pipeGap -= gapReductionRate;
-        }
-      }
-
-      pipes.forEach(pipe => {
-        pipe.x -= 2;
-      });
-
-      if (pipes.length > 0 && pipes[0].x + pipeWidth < 0) {
-        pipes.shift();
-        score++;
-      }
-    }
-
-    function checkCollision() {
-      if (bird.y + bird.radius > canvas.height || bird.y - bird.radius < 0) {
-        gameOver = true;
-      }
-
-      pipes.forEach(pipe => {
-        if (
-          bird.x + bird.radius > pipe.x &&
-          bird.x - bird.radius < pipe.x + pipeWidth &&
-          (bird.y - bird.radius < pipe.top || bird.y + bird.radius > canvas.height - pipe.bottom)
-        ) {
-          gameOver = true;
-        }
-      });
-    }
-
-    function drawScore() {
-      ctx.fillStyle = "black";
-      ctx.font = "20px Arial";
-      ctx.fillText(`Score: ${score}`, 10, 30);
-    }
-
-    function gameLoop() {
-      if (gameOver) {
-        finalScore.textContent = `Final Score: ${score}`;
-        gameOverScreen.style.display = 'flex';
-        return;
-      }
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      bird.velocity += bird.gravity;
-      bird.y += bird.velocity;
-
-      updatePipes();
-      drawPipes();
-      drawBird();
-      drawScore();
-      checkCollision();
-
-      frame++;
-      requestAnimationFrame(gameLoop);
-    }
-
-    startButton.addEventListener('click', () => {
-      titleScreen.style.display = 'none';
-      gameStarted = true;
-      gameLoop();
-    });
-
-    restartButton.addEventListener('click', resetGame);
-
-    document.addEventListener('keydown', () => {
-      if (gameStarted && !gameOver) {
-        bird.velocity = bird.lift;
-        bird.image = fric1;
-        setTimeout(() => bird.image = fric2, 300);
-      }
-    });
   </script>
 </body>
 </html>
