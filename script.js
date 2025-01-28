@@ -14,19 +14,19 @@ fric2.src = 'fric2.png';
 const bird = {
   x: 50,
   y: canvas.height / 2,
-  radius: 25, // Increased size for the bird
-  gravity: 0.13, // Made gravity floatier
-  lift: -5,
+  radius: 25,
+  gravity: 0.08,
+  lift: -4,
   velocity: 0,
   image: fric2
 };
 
 const pipes = [];
 const pipeWidth = 60;
-let pipeGap = 180;
-const pipeFrequency = 120;
-const minPipeGap = 100; // Minimum pipe gap
-const gapReductionRate = 1; // Gap reduction per new pipe
+let pipeGap = 200; // Starting gap size
+const minPipeGap = 100; // Minimum gap size
+const gapReductionRate = 2; // Gap reduction amount per pipe
+const pipeFrequency = 180;
 
 let frame = 0;
 let score = 0;
@@ -37,12 +37,13 @@ function resetGame() {
   bird.y = canvas.height / 2;
   bird.velocity = 0;
   pipes.length = 0;
-  pipeGap = 180; // Reset the gap size on restart
+  pipeGap = 200; // Reset the gap size
   frame = 0;
   score = 0;
   gameOver = false;
   gameOverScreen.style.display = 'none';
   gameStarted = true;
+  bird.y -= 50; // Spawn bird slightly higher
   gameLoop();
 }
 
@@ -52,15 +53,14 @@ function drawBird() {
 
 function drawPipes() {
   pipes.forEach(pipe => {
-    // Draw the top pipe in red
     ctx.fillStyle = "red";
     ctx.fillRect(pipe.x, 0, pipeWidth, pipe.top);
 
-    // Draw the bottom pipe in green
     ctx.fillStyle = "green";
     ctx.fillRect(pipe.x, canvas.height - pipe.bottom, pipeWidth, pipe.bottom);
   });
 }
+
 function updatePipes() {
   if (frame % pipeFrequency === 0) {
     const top = Math.random() * (canvas.height - pipeGap - 100) + 50;
@@ -127,18 +127,35 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-startButton.addEventListener('click', () => {
-  titleScreen.style.display = 'none';
-  gameStarted = true;
-  gameLoop();
-});
+// Start or restart game when Spacebar is pressed
+document.addEventListener('keydown', (event) => {
+  if (event.code === 'Space') {
+    if (!gameStarted) {
+      titleScreen.style.display = 'none';
+      bird.y -= 50; // Spawn bird slightly higher when the game starts
+      gameStarted = true;
+      gameLoop();
+    } else if (gameOver) {
+      resetGame(); // Restart the game from the game over screen
+    }
 
-restartButton.addEventListener('click', resetGame);
-
-document.addEventListener('keydown', () => {
-  if (gameStarted && !gameOver) {
-    bird.velocity = bird.lift;
-    bird.image = fric1;
-    setTimeout(() => bird.image = fric2, 300);
+    if (!gameOver) {
+      bird.velocity = bird.lift;
+      bird.image = fric1;
+      setTimeout(() => (bird.image = fric2), 300);
+    }
   }
 });
+
+// Start the game when the button is clicked
+startButton.addEventListener('click', () => {
+  if (!gameStarted) {
+    titleScreen.style.display = 'none';
+    bird.y -= 50; // Spawn bird slightly higher when the game starts
+    gameStarted = true;
+    gameLoop();
+  }
+});
+
+// Restart the game when the restart button is clicked
+restartButton.addEventListener('click', resetGame);
