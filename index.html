@@ -16,7 +16,7 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: seashell;
+      background: #a5b994; /* Updated background color */
       font-family: 'Poppins', sans-serif;
       font-weight: 600;
     }
@@ -38,7 +38,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(255, 255, 255, 0.8);
+      /* background: rgba(255, 255, 255, 0.8); */
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -131,6 +131,12 @@
       .footer {
         font-size: 16px;
       }
+      .title-image {
+        max-width: 100%; /* Reduced from 80% to 50% */
+        height: auto;
+        display: block;
+        margin: 0 auto;
+      }
     }
   </style>
 </head>
@@ -140,7 +146,8 @@
   </div>
   <div id="titleScreen">
     <img src="fav.jpg" alt="Evolution Stages" class="title-image">
-    <button id="startButton">Start Game</button>
+    <button id="startButton">Start</button>
+    <p style="font-size: 15px">or just press space</p>
   </div>
   <div id="gameOverScreen">
     <h1>Game Over</h1>
