@@ -208,3 +208,23 @@ startButton.addEventListener('click', () => {
 
 // Restart the game when the restart button is clicked
 restartButton.addEventListener('click', resetGame);
+
+
+
+// some s@#$ for the random image in the
+// construction site
+
+// Array of random image URLs
+const randomImages = [
+  "angry.gif",
+  "coffee.gif",
+  "love1.gif",
+  "sunglasses.gif"
+];
+
+// Select the <img> element
+const imgElement = document.getElementById("randomImage");
+
+// Choose a random image from the array
+const randomIndex = Math.floor(Math.random() * randomImages.length);
+imgElement.src = randomImages[randomIndex];
