@@ -105,13 +105,47 @@ function checkCollision() {
 
 function drawScore() {
   ctx.fillStyle = "black";
-  ctx.font = "20px Arial";
-  ctx.fillText(`Score: ${score}`, 10, 30);
+  ctx.font = "bold 32px Arial"; // Bigger & bold font
+  ctx.textAlign = "center"; // Center the score
+  ctx.fillText(`Score: ${score}`, canvas.width / 2, 50); // Centered at top
+
+  // Add a shadow for better visibility
+  ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+  ctx.fillText(`Score: ${score}`, canvas.width / 2 + 2, 52);
 }
 
 function gameLoop() {
   if (gameOver) {
-    finalScore.textContent = `Final Score: ${score}`;
+      finalScore.innerHTML = `
+    <h2 style="
+      font-size: 36px; 
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;">
+      Game Over
+    </h2>
+    <p style="
+      font-size: 24px; 
+      font-weight: bold;
+      text-align: center;
+      margin: 0;">
+      Final Score:
+    </p>
+    <p style="
+      font-size: 30px; 
+      font-weight: bold;
+      color: #a5b994;
+      text-shadow: 
+        -2px -2px 0 #5c736b,  
+        2px -2px 0 #5c736b,  
+        -2px  2px 0 #5c736b,  
+        2px  2px 0 #5c736b; /* Works in all browsers */
+      text-align: center;
+      margin-top: 5px;">
+      ${score}
+    </p>
+  `;
+
     gameOverScreen.style.display = 'flex';
     return;
   }
