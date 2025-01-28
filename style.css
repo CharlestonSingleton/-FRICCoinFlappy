@@ -13,7 +13,6 @@ body {
   overflow: hidden;
 }
 
-/* 🎮 Make the Canvas Responsive */
 canvas {
   display: block;
   background: seashell;
@@ -25,7 +24,6 @@ canvas {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* 🏆 Fix Title & Game Over Screens */
 #titleScreen, #gameOverScreen {
   position: fixed;
   top: 50%;
@@ -45,7 +43,7 @@ canvas {
   display: none;
 }
 
-/* 🎨 Bigger Title Image */
+
 .title-image {
   max-width: 90%; /* Make it a lot bigger */
   height: auto;
@@ -53,7 +51,7 @@ canvas {
   margin: 0 auto 20px; /* Add spacing below it */
 }
 
-/* 🏁 Buttons */
+
 #titleScreen button, #gameOverScreen button {
   margin-top: 15px;
   padding: 12px 24px;
@@ -69,7 +67,7 @@ canvas {
   background-color: #e0e0e0;
 }
 
-/* ⭐ Improve Final Score Display */
+
 #finalScore {
   font-size: 22px; /* Make the text larger */
   font-weight: bold;
@@ -77,7 +75,7 @@ canvas {
   display: block; /* Ensure it has its own line */
 }
 
-/* 📌 Footer */
+
 .footer {
   width: 100%;
   padding: 10px;
@@ -111,25 +109,37 @@ canvas {
   height: 25px;
 }
 
-/* 📍 Logo (Fixed Top Left) */
+/* Logo container */
 .logo {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 80px;
-}
-
-.logo img {
-  width: 100%;
-  height: auto;
-  border-radius: 10px;
-  transition: transform 0.6s ease-in-out;
-  cursor: pointer;
-}
-
-.logo img:hover {
-  transform: rotate(360deg);
-}
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between image & text */
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+    cursor: pointer;
+  }
+  
+  /* Logo image */
+  .logo img {
+    width: 80px;
+    height: auto;
+    border-radius: 10px;
+    transition: transform 0.6s ease-in-out;
+  }
+  
+  /* Simple "Tap me!" text */
+  .logo p {
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 100em;
+    margin: -10px;
+  }
+/* Hover effect */
+.logo:hover img {
+    transform: rotate(360deg);
+  }
 
 /* 📱 Mobile Adjustments */
 @media (max-width: 600px) {
@@ -212,5 +222,60 @@ canvas {
   
   #restartButton:hover {
     background-color: #e0e0e0;
+  }
+  
+
+/* CONSTRUCTION SITE */
+/* Default: Hide the mobile message */
+#mobileMessage {
+    display: none;
+    text-align: center;
+    color: white;
+    background: rgba(0, 0, 0, 0.85);
+    padding: 20px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Style the image */
+  #mobileMessage img {
+    max-width: 80%;
+    height: auto;
+    display: block;
+    margin: 0 auto 15px;
+    border-radius: 10px;
+  }
+  
+  /* Style the text */
+  #mobileMessage h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  #mobileMessage h3 {
+    font-size: 18px;
+    font-weight: 400;
+    opacity: 0.8;
+  }
+  
+  /* Hide the game on mobile */
+  @media (max-width: 800px) {
+    #gameCanvas, 
+    #titleScreen, 
+    #gameOverScreen, 
+    .footer {
+      display: none !important;
+    }
+  
+    #mobileMessage {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
   }
   
