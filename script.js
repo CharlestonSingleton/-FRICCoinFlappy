@@ -28,6 +28,12 @@ const minPipeGap = 100; // Minimum gap size
 const gapReductionRate = 2; // Gap reduction amount per pipe
 const pipeFrequency = 180;
 
+function pipeShrink() {
+  const pipeShrinkSmoother = 1.01; // the closer to 1 the more smoothing
+  const pipeShrinkMultiplier = 100;
+  const result = pipeShrinkMultiplier * Math.pow(pipeShrinkSmoother, -Math.pow(score, 2));
+  return result;
+}
 let frame = 0;
 let score = 0;
 let gameOver = false;
@@ -63,7 +69,7 @@ function drawPipes() {
 
 function updatePipes() {
   if (frame % pipeFrequency === 0) {
-    const top = Math.random() * (canvas.height - pipeGap - 100) + 50;
+    const top = Math.random() * (canvas.height - pipeGap - pipeShrink(score) - 100) + 50;
     const bottom = canvas.height - top - pipeGap;
     pipes.push({ x: canvas.width, top, bottom });
 
