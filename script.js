@@ -78,7 +78,7 @@ function updatePipes() {
   }
 
   pipes.forEach(pipe => {
-    pipe.x -= 3;
+    pipe.x -= 2;
   });
 
   if (pipes.length > 0 && pipes[0].x + pipeWidth < 0) {
