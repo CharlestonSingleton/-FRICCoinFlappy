@@ -23,10 +23,10 @@ const bird = {
 
 const pipes = [];
 const pipeWidth = 60;
-let pipeGap = 200; // Starting gap size
+let pipeGap = 250; // Starting gap size
 const minPipeGap = 120; // Minimum gap size
 const gapReductionRate = 2; // Gap reduction amount per pipe
-const pipeFrequency = 300;
+const pipeFrequency = 200;
 
 function pipeShrink() {
   const pipeShrinkSmoother = 1.01; // the closer to 1 the more smoothing
@@ -78,7 +78,7 @@ function updatePipes() {
   }
 
   pipes.forEach(pipe => {
-    pipe.x -= 2;
+    pipe.x -= 3;
   });
 
   if (pipes.length > 0 && pipes[0].x + pipeWidth < 0) {
