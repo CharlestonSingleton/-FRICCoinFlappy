@@ -23,10 +23,10 @@ const bird = {
 
 const pipes = [];
 const pipeWidth = 60;
-let pipeGap = 200; // Starting gap size
-const minPipeGap = 100; // Minimum gap size
+let pipeGap = 250; // Starting gap size
+const minPipeGap = 120; // Minimum gap size
 const gapReductionRate = 2; // Gap reduction amount per pipe
-const pipeFrequency = 180;
+const pipeFrequency = 400;
 
 function pipeShrink() {
   const pipeShrinkSmoother = 1.01; // the closer to 1 the more smoothing
@@ -49,7 +49,7 @@ function resetGame() {
   gameOver = false;
   gameOverScreen.style.display = 'none';
   gameStarted = true;
-  bird.y -= 50; // Spawn bird slightly higher
+  bird.y -= 100; // Spawn bird slightly higher
   gameLoop();
 }
 
@@ -69,18 +69,16 @@ function drawPipes() {
 
 function updatePipes() {
   if (frame % pipeFrequency === 0) {
-    const top = Math.random() * (canvas.height - pipeGap - pipeShrink(score) - 100) + 50;
+    // Dynamically adjust the pipe gap based on the score
+    pipeGap = Math.max(minPipeGap, 250 - score * 5); // Reduce gap by 5 pixels per score, but never go below minPipeGap
+
+    const top = Math.random() * (canvas.height - pipeGap - 100) + 50;
     const bottom = canvas.height - top - pipeGap;
     pipes.push({ x: canvas.width, top, bottom });
-
-    // Decrease the pipe gap dynamically, but ensure it doesn't go below the minimum
-    if (pipeGap > minPipeGap) {
-      pipeGap -= gapReductionRate;
-    }
   }
 
   pipes.forEach(pipe => {
-    pipe.x -= 2;
+    pipe.x -= 1.3;
   });
 
   if (pipes.length > 0 && pipes[0].x + pipeWidth < 0) {
@@ -133,23 +131,34 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
+// Centralized input handler for both touch and keyboard
+function handleInput() {
+  if (!gameStarted) {
+    titleScreen.style.display = 'none';
+    bird.y -= 50; // Spawn bird slightly higher when the game starts
+    gameStarted = true;
+    gameLoop();
+  } else if (gameOver) {
+    resetGame(); // Restart the game from the game over screen
+  }
+
+  if (!gameOver) {
+    bird.velocity = bird.lift;
+    bird.image = fric1;
+    setTimeout(() => (bird.image = fric2), 300);
+  }
+}
+
+// Add touch support for mobile
+canvas.addEventListener('touchstart', (event) => {
+  event.preventDefault(); // Prevent default scrolling behavior
+  handleInput(); // Trigger input handler
+});
+
 // Start or restart game when Spacebar is pressed
 document.addEventListener('keydown', (event) => {
   if (event.code === 'Space') {
-    if (!gameStarted) {
-      titleScreen.style.display = 'none';
-      bird.y -= 50; // Spawn bird slightly higher when the game starts
-      gameStarted = true;
-      gameLoop();
-    } else if (gameOver) {
-      resetGame(); // Restart the game from the game over screen
-    }
-
-    if (!gameOver) {
-      bird.velocity = bird.lift;
-      bird.image = fric1;
-      setTimeout(() => (bird.image = fric2), 300);
-    }
+    handleInput(); // Trigger input handler
   }
 });
 
