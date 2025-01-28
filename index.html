@@ -7,138 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-    body {
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: #a5b994; /* Updated background color */
-      font-family: 'Poppins', sans-serif;
-      font-weight: 600;
-    }
-    canvas {
-      display: block;
-      background: seashell;
-      max-width: 800px;
-      width: 100%;
-      height: auto;
-      font-weight: 200;
-      border: 5px solid black; /* Adds a solid black border */
-      border-radius: 15px; /* Rounds the corners */
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Optional shadow for better appearance */
-    }
-
-    #titleScreen, #gameOverScreen {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      /* background: rgba(255, 255, 255, 0.8); */
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: black;
-      font-size: 32px;
-      z-index: 10;
-      pointer-events: none;
-    }
-    #titleScreen button, #gameOverScreen button {
-      margin-top: 20px;
-      padding: 15px 30px;
-      font-size: 20px;
-      font-weight: bold;
-      cursor: pointer;
-      pointer-events: all;
-      background-color: white;
-      border: 2px solid black;
-      border-radius: 15px;
-    }
-    #titleScreen button:hover, #gameOverScreen button:hover {
-      background-color: #e0e0e0;
-    }
-    #gameOverScreen {
-      display: none;
-    }
-    .title-image {
-      max-width: 50%; /* Reduced from 80% to 50% */
-      height: auto;
-      display: block;
-      margin: 0 auto;
-    }
-
-
-    .footer {
-      width: 100%;
-      padding: 20px;
-      color: black;
-      position: fixed;
-      bottom: 0;
-      font-size: 20px;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      z-index: 20;
-    }
-    .footer button {
-      padding: 15px 20px;
-      font-size: 18px;
-      background-color: white;
-      color: black;
-      border: 2px solid black;
-      cursor: pointer;
-      border-radius: 15px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: bold;
-    }
-    .footer button:hover {
-      background-color: #e0e0e0;
-    }
-    .footer img {
-      width: 30px;
-      height: 30px;
-    }
-    .logo {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      width: 100px; /* Adjust based on your logo size */
-      height: auto;
-      z-index: 100;
-    }
-
-    .logo img {
-      width: 100%;
-      height: auto;
-      border-radius: 10px;
-      transition: transform 0.6s ease-in-out;
-      cursor: pointer;
-    }
-
-    .logo img:hover {
-      transform: rotate(360deg);
-    }
-    @media (max-width: 600px) {
-      .footer {
-        font-size: 16px;
-      }
-      .title-image {
-        max-width: 100%; /* Reduced from 80% to 50% */
-        height: auto;
-        display: block;
-        margin: 0 auto;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="logo">
@@ -150,7 +19,9 @@
     <p style="font-size: 15px">or just press space</p>
   </div>
   <div id="gameOverScreen">
-    <h1>Game Over</h1>
+    <!-- <h1>Game Over</h1> -->
+    <br>
+    <!-- <p>Final Score</p> -->
     <p id="finalScore"></p>
     <button id="restartButton">Restart</button>
   </div>
