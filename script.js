@@ -23,13 +23,13 @@ const bird = {
 
 const pipes = [];
 const pipeWidth = 60;
-let pipeGap = 250; // Starting gap size
-const minPipeGap = 150; // Minimum gap size
+let pipeGap = 200; // Starting gap size
+const minPipeGap = 100; // Minimum gap size
 const gapReductionRate = 2; // Gap reduction amount per pipe
-const pipeFrequency = 250;
+const pipeFrequency = 180;
 
 function pipeShrink() {
-  const pipeShrinkSmoother = 1.01; // the closer to 1 the more smoothing
+  const pipeShrinkSmoother = 2; // the closer to 1 the more smoothing
   const pipeShrinkMultiplier = 100;
   const result = pipeShrinkMultiplier * Math.pow(pipeShrinkSmoother, -Math.pow(score, 2));
   return result;
@@ -49,7 +49,7 @@ function resetGame() {
   gameOver = false;
   gameOverScreen.style.display = 'none';
   gameStarted = true;
-  bird.y -= 100; // Spawn bird slightly higher
+  bird.y -= 50; // Spawn bird slightly higher
   gameLoop();
 }
 
@@ -69,12 +69,18 @@ function drawPipes() {
 
 function updatePipes() {
   if (frame % pipeFrequency === 0) {
-    // Dynamically adjust the pipe gap based on the score
-    pipeGap = Math.max(minPipeGap, 250 - score * 5); // Reduce gap by 5 pixels per score, but never go below minPipeGap
-
-    const top = Math.random() * (canvas.height - pipeGap - 100) + 50;
+    const top = Math.random() * (canvas.height - pipeShrink(score) - 100) + 50;
     const bottom = canvas.height - top - pipeGap;
+    if (bottom <= 0) {
+      bottom = Math.random() * 10;
+      top = bottom + pipeGap;
+  }
     pipes.push({ x: canvas.width, top, bottom });
+
+    // Decrease the pipe gap dynamically, but ensure it doesn't go below the minimum
+    if (pipeGap > minPipeGap) {
+      pipeGap -= gapReductionRate;
+    }
   }
 
   pipes.forEach(pipe => {
@@ -105,47 +111,13 @@ function checkCollision() {
 
 function drawScore() {
   ctx.fillStyle = "black";
-  ctx.font = "bold 32px Arial"; // Bigger & bold font
-  ctx.textAlign = "center"; // Center the score
-  ctx.fillText(`Score: ${score}`, canvas.width / 2, 50); // Centered at top
-
-  // Add a shadow for better visibility
-  ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
-  ctx.fillText(`Score: ${score}`, canvas.width / 2 + 2, 52);
+  ctx.font = "20px Arial";
+  ctx.fillText(`Score: ${score}`, 10, 30);
 }
 
 function gameLoop() {
   if (gameOver) {
-      finalScore.innerHTML = `
-    <h2 style="
-      font-size: 36px; 
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 10px;">
-      Game Over
-    </h2>
-    <p style="
-      font-size: 24px; 
-      font-weight: bold;
-      text-align: center;
-      margin: 0;">
-      Final Score:
-    </p>
-    <p style="
-      font-size: 30px; 
-      font-weight: bold;
-      color: #a5b994;
-      text-shadow: 
-        -2px -2px 0 #5c736b,  
-        2px -2px 0 #5c736b,  
-        -2px  2px 0 #5c736b,  
-        2px  2px 0 #5c736b; /* Works in all browsers */
-      text-align: center;
-      margin-top: 5px;">
-      ${score}
-    </p>
-  `;
-
+    finalScore.textContent = `Final Score: ${score}`;
     gameOverScreen.style.display = 'flex';
     return;
   }
@@ -165,34 +137,23 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-// Centralized input handler for both touch and keyboard
-function handleInput() {
-  if (!gameStarted) {
-    titleScreen.style.display = 'none';
-    bird.y -= 50; // Spawn bird slightly higher when the game starts
-    gameStarted = true;
-    gameLoop();
-  } else if (gameOver) {
-    resetGame(); // Restart the game from the game over screen
-  }
-
-  if (!gameOver) {
-    bird.velocity = bird.lift;
-    bird.image = fric1;
-    setTimeout(() => (bird.image = fric2), 300);
-  }
-}
-
-// Add touch support for mobile
-canvas.addEventListener('touchstart', (event) => {
-  event.preventDefault(); // Prevent default scrolling behavior
-  handleInput(); // Trigger input handler
-});
-
 // Start or restart game when Spacebar is pressed
 document.addEventListener('keydown', (event) => {
   if (event.code === 'Space') {
-    handleInput(); // Trigger input handler
+    if (!gameStarted) {
+      titleScreen.style.display = 'none';
+      bird.y -= 50; // Spawn bird slightly higher when the game starts
+      gameStarted = true;
+      gameLoop();
+    } else if (gameOver) {
+      resetGame(); // Restart the game from the game over screen
+    }
+
+    if (!gameOver) {
+      bird.velocity = bird.lift;
+      bird.image = fric1;
+      setTimeout(() => (bird.image = fric2), 300);
+    }
   }
 });
 
@@ -208,23 +169,3 @@ startButton.addEventListener('click', () => {
 
 // Restart the game when the restart button is clicked
 restartButton.addEventListener('click', resetGame);
-
-
-
-// some s@#$ for the random image in the
-// construction site
-
-// Array of random image URLs
-const randomImages = [
-  "angry.gif",
-  "coffee.gif",
-  "love1.gif",
-  "sunglasses.gif"
-];
-
-// Select the <img> element
-const imgElement = document.getElementById("randomImage");
-
-// Choose a random image from the array
-const randomIndex = Math.floor(Math.random() * randomImages.length);
-imgElement.src = randomImages[randomIndex];
