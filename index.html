@@ -18,34 +18,58 @@
     <h3>Load this up on your Desktop!</h3>
     <h3>$FRIC devs are working hard, <br>it'll be ready when it's ready.</h3>
     <style>
+      /* Default: Hide the mobile message */
       #mobileMessage {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start; /* Move content closer to the top */
-        align-items: center;
-        height: 100vh;
+        display: none; /* Hidden by default */
         text-align: center;
-        padding-top: 30px; /* Move everything up */
+        color: white;
+        background: rgba(0, 0, 0, 0.85);
+        padding: 20px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
       }
 
-      /* #mobileMessage img {
-        max-width: 60%;
+      /* Style the image inside the mobile message */
+      #mobileMessage img {
+        max-width: 80%;
         height: auto;
         display: block;
-        margin-bottom: 10px; /* Reduce space below image
-      } */
+        margin: 0 auto 15px;
+        border-radius: 10px;
+      }
 
+      /* Style the text inside the mobile message */
       #mobileMessage h1 {
         font-size: 24px;
         font-weight: bold;
-        margin-top: 5px; /* Move text closer to the image */
+        margin-bottom: 10px;
       }
 
       #mobileMessage h3 {
         font-size: 18px;
         font-weight: 400;
-        margin-top: -5px; /* Move the h3 elements up slightly */
-        opacity: 0.9;
+        opacity: 0.8;
+      }
+
+      /* Mobile-specific adjustments (only applies on small screens) */
+      @media (max-width: 800px) {
+        #mobileMessage {
+          display: flex; /* Show the mobile message */
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+        }
+
+        /* Hide the game elements on mobile */
+        #gameCanvas,
+        #titleScreen,
+        #gameOverScreen,
+        .footer {
+          display: none !important;
+        }
       }
 
     </style>
