@@ -15,8 +15,8 @@ const bird = {
   x: 50,
   y: canvas.height / 2,
   radius: 25,
-  gravity: 0.08,
-  lift: -4,
+  gravity: 0.18, // was .08 
+  lift: -5.5,
   velocity: 0,
   image: fric2
 };
