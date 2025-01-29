@@ -66,22 +66,30 @@ function drawPipes() {
     ctx.fillRect(pipe.x, canvas.height - pipe.bottom, pipeWidth, pipe.bottom);
   });
 }
-
 function updatePipes() {
   if (frame % pipeFrequency === 0) {
     const top = Math.random() * (canvas.height - pipeShrink(score) - 100) + 50;
     let bottom = canvas.height - top - pipeGap;
+    
     if (bottom <= 0) {
       bottom = Math.random() * 10;
-      top = bottom + pipeGap;
-  }
+      top = canvas.height - bottom - pipeGap;
+    }
+
     pipes.push({ x: canvas.width, top, bottom });
 
-    // Decrease the pipe gap dynamically, but ensure it doesn't go below the minimum
     if (pipeGap > minPipeGap) {
       pipeGap -= gapReductionRate;
     }
   }
+
+  pipes.forEach(pipe => pipe.x -= 2);
+
+  if (pipes.length > 0 && pipes[0].x + pipeWidth < 0) {
+    pipes.shift();
+    score++;
+  }
+}
 
   pipes.forEach(pipe => {
     pipe.x -= 2;
