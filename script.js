@@ -70,7 +70,7 @@ function drawPipes() {
 function updatePipes() {
   if (frame % pipeFrequency === 0) {
     const top = Math.random() * (canvas.height - pipeShrink(score) - 100) + 50;
-    const bottom = canvas.height - top - pipeGap;
+    let bottom = canvas.height - top - pipeGap;
     if (bottom <= 0) {
       bottom = Math.random() * 10;
       top = bottom + pipeGap;
