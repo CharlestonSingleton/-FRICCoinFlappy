@@ -56,31 +56,69 @@ function resetGame() {
 function drawBird() {
   ctx.drawImage(bird.image, bird.x - bird.radius, bird.y - bird.radius, bird.radius * 2, bird.radius * 2);
 }
-
 function drawPipes() {
   pipes.forEach(pipe => {
+    // ---- TOP PIPE (Red) ----
     ctx.fillStyle = "red";
-    ctx.fillRect(pipe.x, 0, pipeWidth, pipe.top);
+    // Draw the top pipe candlestick (50px tall, centered)
+    ctx.fillRect(
+      pipe.x + ((1 - 1/10) * pipeWidth / 2),
+      0,
+      pipeWidth / 10,
+      50
+    );
+    // Draw the main body of the top pipe immediately below the candlestick
+    ctx.fillRect(
+      pipe.x,
+      50,
+      pipeWidth,
+      pipe.top
+    );
 
+    // ---- BOTTOM PIPE (Green) ----
     ctx.fillStyle = "green";
-    ctx.fillRect(pipe.x, canvas.height - pipe.bottom, pipeWidth, pipe.bottom);
+    // Draw the main body of the bottom pipe.
+    // Its x-position is offset by pipe.stagger.
+    ctx.fillRect(
+      pipe.x + pipe.stagger,
+      canvas.height - pipe.bottom,
+      pipeWidth,
+      pipe.bottom - 50
+    );
+    // Draw the bottom pipe candlestick (50px tall, centered)
+    ctx.fillRect(
+      pipe.x + pipe.stagger + ((1 - 1/10) * pipeWidth / 2),
+      canvas.height - 50,
+      pipeWidth / 10,
+      50
+    );
   });
 }
 
+
 function updatePipes() {
   if (frame % pipeFrequency === 0) {
-    // Dynamically adjust the pipe gap based on the score
-    pipeGap = Math.max(minPipeGap, 250 - score * 5); // Reduce gap by 5 pixels per score, but never go below minPipeGap
+    // Dynamically adjust the gap between pipes based on score.
+    pipeGap = Math.max(minPipeGap, 250 - score * 5);
 
+    // Determine the top pipe height (and thus the bottom pipe height)
     const top = Math.random() * (canvas.height - pipeGap - 100) + 50;
     const bottom = canvas.height - top - pipeGap;
-    pipes.push({ x: canvas.width, top, bottom });
+
+    // Set a fixed horizontal offset for the bottom pipe.
+    // (You can also randomize this value if desired.)
+    const stagger = 0; // Adjust this value to change the horizontal offset
+
+    // Add the new pipe object with the stagger property.
+    pipes.push({ x: canvas.width, top, bottom, stagger });
   }
 
+  // Move each pipe leftward.
   pipes.forEach(pipe => {
-    pipe.x -= 2.5;
+    pipe.x -= 3;
   });
 
+  // Remove off-screen pipes and update the score.
   if (pipes.length > 0 && pipes[0].x + pipeWidth < 0) {
     pipes.shift();
     score++;
@@ -88,20 +126,34 @@ function updatePipes() {
 }
 
 function checkCollision() {
+  // Collision with the canvas top or bottom boundaries.
   if (bird.y + bird.radius > canvas.height || bird.y - bird.radius < 0) {
     gameOver = true;
   }
 
   pipes.forEach(pipe => {
+    // --- Check collision for the TOP pipe (red) ---
     if (
       bird.x + bird.radius > pipe.x &&
       bird.x - bird.radius < pipe.x + pipeWidth &&
-      (bird.y - bird.radius < pipe.top || bird.y + bird.radius > canvas.height - pipe.bottom)
+      // The top pipe’s collision region is from 0 to pipe.top + 50 (candlestick included)
+      bird.y - bird.radius < pipe.top + 50
+    ) {
+      gameOver = true;
+    }
+
+    // --- Check collision for the BOTTOM pipe (green) ---
+    if (
+      bird.x + bird.radius > pipe.x + pipe.stagger &&
+      bird.x - bird.radius < pipe.x + pipe.stagger + pipeWidth &&
+      // The bottom pipe’s collision region starts at canvas.height - pipe.bottom
+      bird.y + bird.radius > canvas.height - pipe.bottom
     ) {
       gameOver = true;
     }
   });
 }
+
 
 function drawScore() {
   ctx.fillStyle = "black";
