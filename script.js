@@ -27,8 +27,6 @@ let pipeGap = 250; // Starting gap size
 const minPipeGap = 150; // Minimum gap size
 const gapReductionRate = 2; // Gap reduction amount per pipe
 const pipeFrequency = 180;
-const baseSpeed = 3;
-const particles = [];
 
 function pipeShrink() {
   const pipeShrinkSmoother = 1.01; // the closer to 1 the more smoothing
@@ -97,26 +95,6 @@ function drawPipes() {
   });
 }
 
-function createParticles() {
-  for (let i = 0; i < 5; i++) {
-    particles.push({
-      x: bird.x - bird.radius/2,
-      y: bird.y,
-      vx: -Math.random() * 2,
-      vy: (Math.random() - 0.5) * 4,
-      life: 1
-    });
-  }
-}
-
-function drawBackground() {
-  const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-  const hue = (score * 5) % 360;
-  gradient.addColorStop(0, `hsl(${hue}, 70%, 80%)`);
-  gradient.addColorStop(1, `hsl(${hue + 60}, 70%, 60%)`);
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-}
 
 function updatePipes() {
   if (frame % pipeFrequency === 0) {
@@ -135,10 +113,9 @@ function updatePipes() {
     pipes.push({ x: canvas.width, top, bottom, stagger });
   }
 
-  // Move each pipe leftward with increasing speed
-  const currentSpeed = baseSpeed + (score * 0.1);
+  // Move each pipe leftward.
   pipes.forEach(pipe => {
-    pipe.x -= currentSpeed;
+    pipe.x -= 3;
   });
 
   // Remove off-screen pipes and update the score.
@@ -148,29 +125,10 @@ function updatePipes() {
   }
 }
 
-function updateParticles() {
-  for (let i = particles.length - 1; i >= 0; i--) {
-    const p = particles[i];
-    p.x += p.vx;
-    p.y += p.vy;
-    p.life -= 0.02;
-    
-    if (p.life <= 0) {
-      particles.splice(i, 1);
-      continue;
-    }
-    
-    ctx.fillStyle = `rgba(255, 255, 255, ${p.life})`;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, 3 * p.life, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
-
 function checkCollision() {
+  // Collision with the canvas top or bottom boundaries.
   if (bird.y + bird.radius > canvas.height || bird.y - bird.radius < 0) {
     gameOver = true;
-    screenShake();
   }
 
   pipes.forEach(pipe => {
@@ -178,25 +136,24 @@ function checkCollision() {
     if (
       bird.x + bird.radius > pipe.x &&
       bird.x - bird.radius < pipe.x + pipeWidth &&
-      // The top pipe's collision region is from 0 to pipe.top + 50 (candlestick included)
+      // The top pipe’s collision region is from 0 to pipe.top + 50 (candlestick included)
       bird.y - bird.radius < pipe.top + 50
     ) {
       gameOver = true;
-      screenShake();
-    } 
+    }
 
     // --- Check collision for the BOTTOM pipe (green) ---
     if (
       bird.x + bird.radius > pipe.x + pipe.stagger &&
       bird.x - bird.radius < pipe.x + pipe.stagger + pipeWidth &&
-      // The bottom pipe's collision region starts at canvas.height - pipe.bottom
+      // The bottom pipe’s collision region starts at canvas.height - pipe.bottom
       bird.y + bird.radius > canvas.height - pipe.bottom
     ) {
       gameOver = true;
-      screenShake();
     }
   });
 }
+
 
 function drawScore() {
   ctx.fillStyle = "black";
@@ -209,66 +166,49 @@ function drawScore() {
   ctx.fillText(`Score: ${score}`, canvas.width / 2 + 2, 52);
 }
 
-function screenShake() {
-  const intensity = 15;
-  const shake = {
-    x: (Math.random() - 0.5) * intensity,
-    y: (Math.random() - 0.5) * intensity
-  };
-  canvas.style.transform = `translate(${shake.x}px, ${shake.y}px)`;
-  
-  // Add stronger vibration feedback for game over
-  if (navigator.vibrate) {
-    navigator.vibrate([100, 50, 100]); // Pattern: vibrate, pause, vibrate
-  }
-  
-  setTimeout(() => {
-    canvas.style.transform = 'translate(0px, 0px)';
-  }, 100);
-}
-
 function gameLoop() {
   if (gameOver) {
-    finalScore.innerHTML = `
-      <h2 style="
-        font-size: 36px; 
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 10px;">
-        Game Over
-      </h2>
-      <p style="
-        font-size: 24px; 
-        font-weight: bold;
-        text-align: center;
-        margin: 0;">
-        Final Score:
-      </p>
-      <p style="
-        font-size: 30px; 
-        font-weight: bold;
-        color: #a5b994;
-        text-shadow: 
-          -2px -2px 0 #5c736b,  
-          2px -2px 0 #5c736b,  
-          -2px  2px 0 #5c736b,  
-          2px  2px 0 #5c736b; /* Works in all browsers */
-        text-align: center;
-        margin-top: 5px;">
-        ${score}
-      </p>
-    `;
+      finalScore.innerHTML = `
+    <h2 style="
+      font-size: 36px; 
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;">
+      Game Over
+    </h2>
+    <p style="
+      font-size: 24px; 
+      font-weight: bold;
+      text-align: center;
+      margin: 0;">
+      Final Score:
+    </p>
+    <p style="
+      font-size: 30px; 
+      font-weight: bold;
+      color: #a5b994;
+      text-shadow: 
+        -2px -2px 0 #5c736b,  
+        2px -2px 0 #5c736b,  
+        -2px  2px 0 #5c736b,  
+        2px  2px 0 #5c736b; /* Works in all browsers */
+      text-align: center;
+      margin-top: 5px;">
+      ${score}
+    </p>
+  `;
 
     gameOverScreen.style.display = 'flex';
     return;
   }
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-  drawBackground();  // Add background
+
+  bird.velocity += bird.gravity;
+  bird.y += bird.velocity;
+
   updatePipes();
   drawPipes();
-  updateParticles();  // Add particles
   drawBird();
   drawScore();
   checkCollision();
@@ -281,23 +221,16 @@ function gameLoop() {
 function handleInput() {
   if (!gameStarted) {
     titleScreen.style.display = 'none';
-    bird.y -= 50;
+    bird.y -= 50; // Spawn bird slightly higher when the game starts
     gameStarted = true;
     gameLoop();
   } else if (gameOver) {
-    resetGame();
+    resetGame(); // Restart the game from the game over screen
   }
 
   if (!gameOver) {
     bird.velocity = bird.lift;
     bird.image = fric1;
-    createParticles();
-    
-    // Add vibration feedback (short pulse)
-    if (navigator.vibrate) {
-      navigator.vibrate(20);
-    }
-    
     setTimeout(() => (bird.image = fric2), 300);
   }
 }
@@ -305,13 +238,13 @@ function handleInput() {
 // Add touch support for mobile
 canvas.addEventListener('touchstart', (event) => {
   event.preventDefault(); // Prevent default scrolling behavior
-  handleInput();
+  handleInput(); // Trigger input handler
 });
 
 // Start or restart game when Spacebar is pressed
 document.addEventListener('keydown', (event) => {
   if (event.code === 'Space') {
-    handleInput();
+    handleInput(); // Trigger input handler
   }
 });
 
@@ -327,6 +260,8 @@ startButton.addEventListener('click', () => {
 
 // Restart the game when the restart button is clicked
 restartButton.addEventListener('click', resetGame);
+
+
 
 // some s@#$ for the random image in the
 // construction site
